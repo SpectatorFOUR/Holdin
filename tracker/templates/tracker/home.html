@@ -1,0 +1,119 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="home-wrap">
+
+    <section class="top-area">
+        <div class="balance-card">
+            <div class="total-box">
+                <span class="label">Total Amount</span>
+                <span class="amount big" id="bal-total">Rs. {{ balances.total|floatformat:"2g" }}</span>
+            </div>
+            <div class="small-boxes">
+                <div class="small-box">
+                    <span class="label">In Cash</span>
+                    <span class="amount" id="bal-cash">Rs. {{ balances.cash|floatformat:"2g" }}</span>
+                </div>
+                <div class="small-box">
+                    <span class="label">In Bank</span>
+                    <span class="amount" id="bal-bank">Rs. {{ balances.bank|floatformat:"2g" }}</span>
+                </div>
+                <div class="small-box">
+                    <span class="label">In Wallet</span>
+                    <span class="amount" id="bal-wallet">Rs. {{ balances.wallet|floatformat:"2g" }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button type="button" class="btn-credit" data-open-tx="credit">Credit</button>
+            <button type="button" class="btn-debit" data-open-tx="debit">Debit</button>
+        </div>
+    </section>
+
+    <section class="history-card">
+        <h2>History</h2>
+        <div class="history-list" id="history-list"
+             data-url="{% url 'history' %}"
+             data-next-page="{% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}">
+            {% include 'tracker/_history_rows.html' %}
+            {% if not page_obj.object_list %}
+                <p class="empty">No transactions yet.</p>
+            {% endif %}
+        </div>
+    </section>
+
+</div>
+
+<div class="modal-backdrop" id="receipt-modal" hidden>
+    <div class="receipt" role="dialog" aria-modal="true" aria-labelledby="receipt-heading">
+        <button type="button" class="modal-close" id="receipt-close" aria-label="Close">&times;</button>
+        <h3 id="receipt-heading">Transaction receipt</h3>
+        <span class="receipt-badge" id="r-type"></span>
+        <p class="receipt-amount" id="r-amount"></p>
+        <dl class="receipt-list" id="r-details"></dl>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="tx-modal" hidden>
+    <div class="receipt tx-box" id="tx-box" role="dialog" aria-modal="true" aria-labelledby="tx-heading">
+        <button type="button" class="modal-close" id="tx-close" aria-label="Close">&times;</button>
+        <h3 id="tx-heading">Add transaction</h3>
+
+        <form id="tx-form"
+              data-credit-url="{% url 'add_transaction' 'credit' %}"
+              data-debit-url="{% url 'add_transaction' 'debit' %}">
+            {% csrf_token %}
+
+            <div class="field">
+                <label for="{{ form.title.id_for_label }}">Title</label>
+                {{ form.title }}
+                <div class="field-error" data-for="title"></div>
+            </div>
+
+            <div class="field">
+                <label for="{{ form.amount.id_for_label }}">Amount (Rs.)</label>
+                {{ form.amount }}
+                <div class="field-error" data-for="amount"></div>
+            </div>
+
+            <div class="field">
+                <label for="{{ form.account.id_for_label }}" id="tx-account-label">Balance in</label>
+                {{ form.account }}
+                <div class="field-error" data-for="account"></div>
+            </div>
+
+            <div class="field">
+                <label for="{{ form.description.id_for_label }}">Description (optional)</label>
+                {{ form.description }}
+                <div class="field-error" data-for="description"></div>
+            </div>
+
+            <div class="field">
+                <label for="{{ form.party.id_for_label }}" id="tx-party-label">Source</label>
+                {{ form.party }}
+                <div class="field-error" data-for="party"></div>
+            </div>
+
+            <div class="field">
+                <label for="{{ form.date_time.id_for_label }}">Date and time</label>
+                {{ form.date_time }}
+                <div class="field-error" data-for="date_time"></div>
+            </div>
+
+            <div class="form-error" id="tx-form-error"></div>
+
+            <div class="tx-actions">
+                <button type="button" class="btn-cancel" id="tx-cancel">Cancel</button>
+                <button type="submit" class="btn-save" id="tx-save">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'tracker/js/history.js' %}?v=2"></script>
+<script src="{% static 'tracker/js/receipt.js' %}?v=2"></script>
+<script src="{% static 'tracker/js/transaction.js' %}?v=2"></script>
+{% endblock %}
+

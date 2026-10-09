@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Holdin{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'tracker/css/style.css' %}?v=5">
+</head>
+<body>
+    <header class="navbar">
+        <a href="{% url 'home' %}" class="brand">Holdin</a>
+        <div class="nav-right">
+            <details class="profile">
+                <summary aria-label="Account menu">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 14.2a8 8 0 0 1-6-2.7c.03-2 4-3.1 6-3.1s5.97 1.1 6 3.1a8 8 0 0 1-6 2.7z"/>
+                    </svg>
+                </summary>
+                <div class="dropdown">
+                    {% if user.is_authenticated %}
+                        <p class="dropdown-name">{{ user.username }}</p>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}">Login</a>
+                        <a href="{% url 'signup' %}">Signup</a>
+                    {% endif %}
+                </div>
+            </details>
+            <span class="hamburger" aria-hidden="true">&#9776;</span>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

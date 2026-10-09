@@ -1,0 +1,16 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Set up your balance - Holdin{% endblock %}
+
+{% block content %}
+<div class="card auth-card">
+    <h2>Welcome to Holdin</h2>
+    <p class="setup-note">Enter how much money you have right now. You only do this once. After this, every Credit and Debit you add keeps your balance up to date.</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-primary">Save and continue</button>
+    </form>
+</div>
+{% endblock %}
+

@@ -1,0 +1,20 @@
+{% for t in page_obj %}
+<div class="history-row">
+    <span class="dot {{ t.type }}" title="{{ t.get_type_display }}"></span>
+    <span class="h-amount">Rs. {{ t.amount|floatformat:"2g" }}</span>
+    <span class="h-time">{{ t.date_time|date:"d M Y, h:i A" }}</span>
+    <button type="button" class="row-menu" aria-label="View details"
+            data-id="{{ t.id }}"
+            data-kind="{{ t.type }}"
+            data-type="{{ t.get_type_display }}"
+            data-title="{{ t.title }}"
+            data-amount="{{ t.amount|floatformat:'2g' }}"
+            data-account-label="{% if t.type == 'credit' %}Balance in{% else %}Balance from{% endif %}"
+            data-account="{{ t.get_account_display }}"
+            data-party-label="{% if t.type == 'credit' %}Source{% else %}Paid to{% endif %}"
+            data-party="{{ t.party }}"
+            data-description="{{ t.description }}"
+            data-datetime="{{ t.date_time|date:'d M Y, h:i A' }}">&#9776;</button>
+</div>
+{% endfor %}
+

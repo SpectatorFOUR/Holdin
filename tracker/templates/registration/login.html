@@ -1,0 +1,15 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Login - Holdin{% endblock %}
+
+{% block content %}
+<div class="card auth-card">
+    <h2>Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-primary">Login</button>
+    </form>
+    <p class="auth-switch">New here? <a href="{% url 'signup' %}">Create an account</a></p>
+</div>
+{% endblock %}
